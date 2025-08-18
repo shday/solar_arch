@@ -1,6 +1,5 @@
 import math
-from solid2 import (cube, sphere, cylinder, difference, set_global_fn,
-                     circle, rotate_extrude, linear_extrude )
+from solid2 import ( set_global_fn, circle )
 
 
 SMALL_TUBE_OD = 2.54
@@ -31,18 +30,11 @@ BACK_STANTION = RAIL_HEIGHT/math.cos(math.radians(BACK_STANTION_ANGLE))
 FRONT_ARCH_TUBE = (ARCH_HEIGHT - RAIL_HEIGHT -
                    (math.sin(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))-math.sin(math.radians(FRONT_STANTION_ANGLE)))  *BEND_RADIUS -
                    math.cos(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))*BEND_RADIUS)/math.cos(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))
-BACK_ARCH_TUBE = (ARCH_HEIGHT - RAIL_HEIGHT - 
-                  math.sin(math.radians(BACK_ARCH_ANGLE))*BEND_RADIUS -
-                  math.cos(math.radians(BACK_ARCH_ANGLE))*BEND_RADIUS)/math.cos(math.radians(BACK_ARCH_ANGLE))
 
 BACK_ARCH_TUBE = (ARCH_HEIGHT - RAIL_HEIGHT -
                    (math.sin(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))-math.sin(math.radians(BACK_STANTION_ANGLE)))  *BEND_RADIUS -
                    math.cos(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))*BEND_RADIUS)/math.cos(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))
 
-
-
-#print(f'front tube={FRONT_ARCH_TUBE}')
-#print(f'front tube={BACK_ARCH_TUBE}')
 
 set_global_fn(72)
 
@@ -147,7 +139,6 @@ half_rail = half_rail().rotateZ(z_angle).right(
         RAIL_HEIGHT/2*math.tan(math.radians(FRONT_STANTION_ANGLE))).up(RAIL_HEIGHT/2)
 
 
-
 arch = section + section2.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
         + top_support + side_support +  rail + half_rail
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
@@ -158,6 +149,4 @@ print('Top width=',round(top_support_span,1))
 print('Top setback=',round(front_info['right'],1))
 
 
-
-d = arch
-d.save_as_scad("solar_arch.scad")
+arch.save_as_scad("solar_arch.scad")
