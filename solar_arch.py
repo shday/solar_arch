@@ -11,7 +11,7 @@ RAIL_HEIGHT = 75
 ARCH_HEIGHT = 200
 FRONT_ARCH_WIDTH = 350
 BACK_ARCH_WIDTH = 340
-ARCH_DEPTH = 100
+ARCH_DEPTH = 100 # at base
 FRONT_ARCH_ANGLE = 15
 BACK_ARCH_ANGLE = 20
 FRONT_STANTION_ANGLE = 15
@@ -97,13 +97,13 @@ tube2 = Tube(TUBE_OD, TUBE_ID, FRONT_ARCH_TUBE)
 bend2 = Bend(TUBE_OD, TUBE_ID, BEND_RADIUS,90,rotateZ=90)
 tube3 = Tube(TUBE_OD, TUBE_ID, FRONT_TOP_TUBE/2)
 
-section , front_info = connect(tube1, bend1,tube2,bend2,tube3)
+front_arch , front_info = connect(tube1, bend1,tube2,bend2,tube3)
 
 tube1 = Tube(TUBE_OD, TUBE_ID, BACK_STANTION,rotateY=BACK_STANTION_ANGLE)
 bend1 = Bend(TUBE_OD, TUBE_ID, BEND_RADIUS,BACK_ARCH_ANGLE)
 tube2 = Tube(TUBE_OD, TUBE_ID, BACK_ARCH_TUBE)
 tube3 = Tube(TUBE_OD, TUBE_ID, BACK_TOP_TUBE/2)
-section2, back_info = connect(tube1, bend1,tube2,bend2,tube3)
+back_arch, back_info = connect(tube1, bend1,tube2,bend2,tube3)
 
 top_support_span = back_info['right']-front_info['right']+ARCH_DEPTH
 top_support = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, top_support_span, rotateY=90)
@@ -139,14 +139,13 @@ half_rail = half_rail().rotateZ(z_angle).right(
         RAIL_HEIGHT/2*math.tan(math.radians(FRONT_STANTION_ANGLE))).up(RAIL_HEIGHT/2)
 
 
-arch = section + section2.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
+arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
         + top_support + side_support +  rail + half_rail
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
 assert math.isclose(front_info['up'],back_info['up'])
 print('Height=',round(front_info['up'],1))
-print('Top width=',round(top_support_span,1))
-print('Top setback=',round(front_info['right'],1))
-
+print('Top depth=',round(top_support_span,1))
+print('Top setback=',round(front_info['right'],1),'(distance from perpendicular at base front)')
 
 arch.save_as_scad("solar_arch.scad")
