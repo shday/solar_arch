@@ -1,5 +1,11 @@
 import math
-from solid2 import ( set_global_fn, circle )
+from solid2 import ( set_global_fn,register_access_syntax, circle )
+#from solid2.extensions.bosl2 import extrude_from_to
+from solid2.extensions import bosl2
+
+@register_access_syntax
+def extrude_from_to(obj, start, end):
+    return bosl2.extrude_from_to(start,end)(obj)
 
 
 SMALL_TUBE_OD = 2.54
@@ -19,6 +25,7 @@ BACK_STANTION_ANGLE = 5
 
 SIDE_SUPPORT_OFFSET = 25
 TOP_SUPPORT_OFFSET = 75
+CROSS_SUPPORT_OFFSET = 75
 
 FRONT_TOP_TUBE = FRONT_ARCH_WIDTH - 2*BEND_RADIUS
 BACK_TOP_TUBE = BACK_ARCH_WIDTH - 2*BEND_RADIUS
@@ -138,14 +145,27 @@ half_rail = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, half_rail_span,rotateY=90)
 half_rail = half_rail().rotateZ(z_angle).right(
         RAIL_HEIGHT/2*math.tan(math.radians(FRONT_STANTION_ANGLE))).up(RAIL_HEIGHT/2)
 
+#Cross support
+ring = circle(d=SMALL_TUBE_OD) - circle(d=SMALL_TUBE_ID)
+
+startX = ARCH_DEPTH + back_info['right'] - CROSS_SUPPORT_OFFSET*math.tan(math.radians(back_info['rotateY']))
+startY = (FRONT_ARCH_WIDTH - BACK_ARCH_WIDTH)/2
+startZ = ARCH_HEIGHT- CROSS_SUPPORT_OFFSET
+
+endX = ARCH_DEPTH + back_info['right']
+endY = CROSS_SUPPORT_OFFSET
+endZ = ARCH_HEIGHT
+
+cross_support = ring.extrude_from_to([startX,startY ,startZ],
+                            [endX,endY,endZ])
 
 arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
-        + top_support + side_support +  rail + half_rail
+        + top_support + side_support +  rail + half_rail + cross_support
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
+
+arch.save_as_scad("solar_arch.scad")
 
 assert math.isclose(front_info['up'],back_info['up'])
 print('Height=',round(front_info['up'],1))
 print('Top depth=',round(top_support_span,1))
 print('Top setback=',round(front_info['right'],1),'(distance from perpendicular at base front)')
-
-arch.save_as_scad("solar_arch.scad")
