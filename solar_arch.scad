@@ -1,3 +1,35 @@
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/version.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/constants.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/transforms.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/distributors.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/miscellaneous.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/color.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/attachments.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/beziers.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/shapes3d.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/shapes2d.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/drawing.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/masks3d.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/masks2d.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/math.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/paths.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/lists.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/comparisons.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/linalg.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/trigonometry.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/vectors.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/affine.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/coords.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/geometry.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/regions.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/strings.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/vnf.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/structs.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/rounding.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/skin.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/utility.scad>;
+include </Users/stephenday/miniconda3/envs/scad/lib/python3.13/site-packages/solid2/extensions/bosl2/BOSL2/partitions.scad>;
+
 $fn = 72;
 
 union() {
@@ -227,6 +259,12 @@ union() {
 			}
 		}
 	}
+	extrude_from_to(pt1 = [128.54619606068772, 5.0, 125], pt2 = [163.51927042231262, 75, 200]) {
+		difference() {
+			circle(d = 2.54);
+			circle(d = 2.4);
+		}
+	}
 	translate(v = [0, 350, 0]) {
 		mirror(v = [0, 1, 0]) {
 			union() {
@@ -454,6 +492,12 @@ union() {
 								}
 							}
 						}
+					}
+				}
+				extrude_from_to(pt1 = [128.54619606068772, 5.0, 125], pt2 = [163.51927042231262, 75, 200]) {
+					difference() {
+						circle(d = 2.54);
+						circle(d = 2.4);
 					}
 				}
 			}
