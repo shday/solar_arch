@@ -1,6 +1,5 @@
 import math
 from solid2 import ( set_global_fn,register_access_syntax, circle )
-#from solid2.extensions.bosl2 import extrude_from_to
 from solid2.extensions import bosl2
 
 @register_access_syntax
@@ -22,6 +21,7 @@ FRONT_ARCH_ANGLE = 15
 BACK_ARCH_ANGLE = 20
 FRONT_STANTION_ANGLE = 15
 BACK_STANTION_ANGLE = 5
+DAVIT = 30
 
 SIDE_SUPPORT_OFFSET = 25
 TOP_SUPPORT_OFFSET = 75
@@ -148,9 +148,9 @@ half_rail = half_rail().rotateZ(z_angle).right(
 #Cross support
 ring = circle(d=SMALL_TUBE_OD) - circle(d=SMALL_TUBE_ID)
 
-startX = ARCH_DEPTH + back_info['right'] - CROSS_SUPPORT_OFFSET*math.tan(math.radians(back_info['rotateY']))
+startX = ARCH_DEPTH + back_info['right'] - 0.8*CROSS_SUPPORT_OFFSET*math.tan(math.radians(back_info['rotateY']))
 startY = (FRONT_ARCH_WIDTH - BACK_ARCH_WIDTH)/2
-startZ = ARCH_HEIGHT- CROSS_SUPPORT_OFFSET
+startZ = ARCH_HEIGHT- 0.8*CROSS_SUPPORT_OFFSET
 
 endX = ARCH_DEPTH + back_info['right']
 endY = CROSS_SUPPORT_OFFSET
@@ -159,8 +159,18 @@ endZ = ARCH_HEIGHT
 cross_support = ring.extrude_from_to([startX,startY ,startZ],
                             [endX,endY,endZ])
 
+
+#Davit
+davit = Tube(TUBE_OD, TUBE_ID, DAVIT, rotateY=90)
+cap = Tube(TUBE_OD, 0, 0.3, rotateY=90)
+davit = davit() + cap().right(DAVIT)
+davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
+
+
+
+
 arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
-        + top_support + side_support +  rail + half_rail + cross_support
+        + top_support + side_support +  rail + half_rail + cross_support + davit
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
 arch.save_as_scad("solar_arch.scad")

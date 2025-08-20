@@ -259,10 +259,36 @@ union() {
 			}
 		}
 	}
-	extrude_from_to(pt1 = [128.54619606068772, 5.0, 125], pt2 = [163.51927042231262, 75, 200]) {
+	extrude_from_to(pt1 = [135.5408109330127, 5.0, 140.0], pt2 = [163.51927042231262, 75, 200]) {
 		difference() {
 			circle(d = 2.54);
 			circle(d = 2.4);
+		}
+	}
+	translate(v = [0, 75, 0]) {
+		translate(v = [0, 0, 200]) {
+			translate(v = [163.51927042231262, 0, 0]) {
+				union() {
+					rotate(a = [0, 90, 0]) {
+						linear_extrude(height = 30) {
+							difference() {
+								circle(d = 4);
+								circle(d = 3.7);
+							}
+						}
+					}
+					translate(v = [30, 0, 0]) {
+						rotate(a = [0, 90, 0]) {
+							linear_extrude(height = 0.3) {
+								difference() {
+									circle(d = 4);
+									circle(d = 0);
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 	translate(v = [0, 350, 0]) {
@@ -494,10 +520,36 @@ union() {
 						}
 					}
 				}
-				extrude_from_to(pt1 = [128.54619606068772, 5.0, 125], pt2 = [163.51927042231262, 75, 200]) {
+				extrude_from_to(pt1 = [135.5408109330127, 5.0, 140.0], pt2 = [163.51927042231262, 75, 200]) {
 					difference() {
 						circle(d = 2.54);
 						circle(d = 2.4);
+					}
+				}
+				translate(v = [0, 75, 0]) {
+					translate(v = [0, 0, 200]) {
+						translate(v = [163.51927042231262, 0, 0]) {
+							union() {
+								rotate(a = [0, 90, 0]) {
+									linear_extrude(height = 30) {
+										difference() {
+											circle(d = 4);
+											circle(d = 3.7);
+										}
+									}
+								}
+								translate(v = [30, 0, 0]) {
+									rotate(a = [0, 90, 0]) {
+										linear_extrude(height = 0.3) {
+											difference() {
+												circle(d = 4);
+												circle(d = 0);
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
