@@ -21,7 +21,9 @@ FRONT_ARCH_ANGLE = 15
 BACK_ARCH_ANGLE = 20
 FRONT_STANTION_ANGLE = 15
 BACK_STANTION_ANGLE = 5
-DAVIT = 30
+DAVIT_LENGTH = 30
+FEET_DIAMETER = 10
+FEET_WIDTH = 1
 
 SIDE_SUPPORT_OFFSET = 25
 TOP_SUPPORT_OFFSET = 75
@@ -54,7 +56,9 @@ class Tube:
         self.rotateY = rotateY
 
     def __call__(self):
-        ring = circle(d=self.TUBE_OD) - circle(d=self.TUBE_ID)
+        ring = circle(d=self.TUBE_OD)
+        if self.TUBE_ID:
+            ring = ring - circle(d=self.TUBE_ID)
         return ring.linear_extrude(self.length).rotateY(self.rotateY)
     
 class Bend:
@@ -161,16 +165,21 @@ cross_support = ring.extrude_from_to([startX,startY ,startZ],
 
 
 #Davit
-davit = Tube(TUBE_OD, TUBE_ID, DAVIT, rotateY=90)
+davit = Tube(TUBE_OD, TUBE_ID, DAVIT_LENGTH, rotateY=90)
 cap = Tube(TUBE_OD, 0, 0.3, rotateY=90)
-davit = davit() + cap().right(DAVIT)
+davit = davit() + cap().right(DAVIT_LENGTH)
 davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
 
-
-
+#Feet
+foot = Tube(FEET_DIAMETER, 0, FEET_WIDTH, rotateY=0)
+back_foot = foot().right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
 
 arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
-        + top_support + side_support +  rail + half_rail + cross_support + davit
+        + top_support + side_support +  rail + half_rail \
+            + cross_support \
+                + davit \
+                + foot() + back_foot 
+arch = arch - foot().down(FEET_WIDTH) - back_foot.down(FEET_WIDTH)
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
 arch.save_as_scad("solar_arch.scad")
