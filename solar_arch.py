@@ -24,6 +24,7 @@ BACK_STANTION_ANGLE = 5
 DAVIT_LENGTH = 30
 FEET_DIAMETER = 10
 FEET_WIDTH = 1
+BOLT_HOLE_DIAMETER = 0.85
 
 SIDE_SUPPORT_OFFSET = 25
 TOP_SUPPORT_OFFSET = 75
@@ -171,15 +172,29 @@ davit = davit() + cap().right(DAVIT_LENGTH)
 davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
 
 #Feet
-foot = Tube(FEET_DIAMETER, 0, FEET_WIDTH, rotateY=0)
-back_foot = foot().right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
+RAD30 = math.radians(30)
+RAD60 = math.radians(60)
+foot = Tube(FEET_DIAMETER, 0, FEET_WIDTH, rotateY=0)()
+bolt_hole = Tube(BOLT_HOLE_DIAMETER,0,FEET_WIDTH)()
+foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - 1.5)).forward(
+    math.cos(RAD30)*(FEET_DIAMETER/2 - 1.5))
+foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - 1.5)).back(
+    math.cos(RAD30)*(FEET_DIAMETER/2 - 1.5))
+foot = foot - bolt_hole.left(FEET_DIAMETER/2 - 1.5)
+back_foot = foot.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
+
+#Flatten stantion edges from bottom of feet and make hole for wiring
+foot_minus = foot + Tube(TUBE_ID,0,FEET_WIDTH*2)()
+back_foot_minus = foot_minus.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
 
 arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
         + top_support + side_support +  rail + half_rail \
             + cross_support \
                 + davit \
-                + foot() + back_foot 
-arch = arch - foot().down(FEET_WIDTH) - back_foot.down(FEET_WIDTH)
+                + foot + back_foot 
+
+arch = arch - foot_minus.down(FEET_WIDTH) - back_foot_minus.down(FEET_WIDTH)
+
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
 arch.save_as_scad("solar_arch.scad")
