@@ -1,5 +1,5 @@
 import math
-from solid2 import ( set_global_fn,register_access_syntax, circle )
+from solid2 import ( set_global_fn,register_access_syntax, circle, square )
 from solid2.extensions import bosl2
 
 @register_access_syntax
@@ -168,8 +168,14 @@ cross_support = ring.extrude_from_to([startX,startY ,startZ],
 #Davit
 davit = Tube(TUBE_OD, TUBE_ID, DAVIT_LENGTH, rotateY=90)
 cap = Tube(TUBE_OD, 0, 0.3, rotateY=90)
-davit = davit() + cap().right(DAVIT_LENGTH)
+loop = circle(d=TUBE_OD-0.3) + square(size=TUBE_OD-0.3,center=True).left(TUBE_OD/2) - circle(d=TUBE_OD-2)
+loop = loop.extrude_from_to([0,0,-0.4],[0,0,0.4]).rotateX(90)
+
+davit = davit() + cap().right(DAVIT_LENGTH) + loop.right(DAVIT_LENGTH+2)
 davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
+
+
+
 
 #Feet
 RAD30 = math.radians(30)

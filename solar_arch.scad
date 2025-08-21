@@ -286,6 +286,21 @@ union() {
 									}
 								}
 							}
+							translate(v = [32, 0, 0]) {
+								rotate(a = [90, 0, 0]) {
+									extrude_from_to(pt1 = [0, 0, -0.4], pt2 = [0, 0, 0.4]) {
+										difference() {
+											union() {
+												circle(d = 3.7);
+												translate(v = [-2.0, 0, 0]) {
+													square(center = true, size = 3.7);
+												}
+											}
+											circle(d = 2);
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -698,6 +713,21 @@ union() {
 										rotate(a = [0, 90, 0]) {
 											linear_extrude(height = 0.3) {
 												circle(d = 4);
+											}
+										}
+									}
+									translate(v = [32, 0, 0]) {
+										rotate(a = [90, 0, 0]) {
+											extrude_from_to(pt1 = [0, 0, -0.4], pt2 = [0, 0, 0.4]) {
+												difference() {
+													union() {
+														circle(d = 3.7);
+														translate(v = [-2.0, 0, 0]) {
+															square(center = true, size = 3.7);
+														}
+													}
+													circle(d = 2);
+												}
 											}
 										}
 									}
