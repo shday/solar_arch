@@ -7,28 +7,34 @@ def extrude_from_to(obj, start, end):
     return bosl2.extrude_from_to(start,end)(obj)
 
 
-SMALL_TUBE_OD = 2.54
-SMALL_TUBE_ID = 2.4
-TUBE_OD = 4
-TUBE_ID = 3.7
-BEND_RADIUS = 20
-RAIL_HEIGHT = 75
-ARCH_HEIGHT = 200
-FRONT_ARCH_WIDTH = 350
-BACK_ARCH_WIDTH = 340
-ARCH_DEPTH = 100 # at base
+SMALL_TUBE_OD = 25.4
+SMALL_TUBE_ID = 24
+TUBE_OD = 40
+TUBE_ID = 37
+BEND_RADIUS = 200
+RAIL_HEIGHT = 750
+ARCH_HEIGHT = 2000
+FRONT_ARCH_WIDTH = 3500
+BACK_ARCH_WIDTH = 3400
+ARCH_DEPTH = 1000 # at base
 FRONT_ARCH_ANGLE = 15
 BACK_ARCH_ANGLE = 20
 FRONT_STANTION_ANGLE = 15
 BACK_STANTION_ANGLE = 5
-DAVIT_LENGTH = 30
-FEET_DIAMETER = 10
-FEET_WIDTH = 1
-BOLT_HOLE_DIAMETER = 0.85
 
-SIDE_SUPPORT_OFFSET = 25
-TOP_SUPPORT_OFFSET = 75
-CROSS_SUPPORT_OFFSET = 75
+DAVIT_LENGTH = 300
+CAP_WIDTH = 3
+LOOP_WIDTH = 8
+LOOP_HOLE_DIAMETER = 20
+
+FEET_DIAMETER = 100
+FEET_WIDTH = 10
+BOLT_HOLE_DIAMETER = 8.5
+BOLE_HOLE_OFFSET = 15
+
+SIDE_SUPPORT_OFFSET = 250
+TOP_SUPPORT_OFFSET = 750
+CROSS_SUPPORT_OFFSET = 750
 
 FRONT_TOP_TUBE = FRONT_ARCH_WIDTH - 2*BEND_RADIUS
 BACK_TOP_TUBE = BACK_ARCH_WIDTH - 2*BEND_RADIUS
@@ -167,11 +173,11 @@ cross_support = ring.extrude_from_to([startX,startY ,startZ],
 
 #Davit
 davit = Tube(TUBE_OD, TUBE_ID, DAVIT_LENGTH, rotateY=90)
-cap = Tube(TUBE_OD, 0, 0.3, rotateY=90)
-loop = circle(d=TUBE_OD-0.3) + square(size=TUBE_OD-0.3,center=True).left(TUBE_OD/2) - circle(d=TUBE_OD-2)
-loop = loop.extrude_from_to([0,0,-0.4],[0,0,0.4]).rotateX(90)
+cap = Tube(TUBE_OD, 0, CAP_WIDTH, rotateY=90)
+loop = circle(d=TUBE_OD-CAP_WIDTH) + square(size=TUBE_OD-CAP_WIDTH,center=True).left(TUBE_OD/2) - circle(d=LOOP_HOLE_DIAMETER)
+loop = loop.extrude_from_to([0,0,-LOOP_WIDTH/2],[0,0,LOOP_WIDTH/2]).rotateX(90)
 
-davit = davit() + cap().right(DAVIT_LENGTH) + loop.right(DAVIT_LENGTH+2)
+davit = davit() + cap().right(DAVIT_LENGTH) + loop.right(DAVIT_LENGTH+TUBE_OD/2)
 davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
 
 
@@ -182,11 +188,11 @@ RAD30 = math.radians(30)
 RAD60 = math.radians(60)
 foot = Tube(FEET_DIAMETER, 0, FEET_WIDTH, rotateY=0)()
 bolt_hole = Tube(BOLT_HOLE_DIAMETER,0,FEET_WIDTH)()
-foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - 1.5)).forward(
-    math.cos(RAD30)*(FEET_DIAMETER/2 - 1.5))
-foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - 1.5)).back(
-    math.cos(RAD30)*(FEET_DIAMETER/2 - 1.5))
-foot = foot - bolt_hole.left(FEET_DIAMETER/2 - 1.5)
+foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).forward(
+    math.cos(RAD30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
+foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).back(
+    math.cos(RAD30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
+foot = foot - bolt_hole.left(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)
 back_foot = foot.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
 
 #Flatten stantion edges from bottom of feet and make hole for wiring
@@ -210,3 +216,5 @@ print('Height=',round(front_info['up'],1))
 print('Top depth=',round(top_support_span,1))
 print('Top setback=',round(front_info['right'],1),'(distance from perpendicular at base front)')
 print('Top-back setback=',round(back_info['right'],1),'(distance from perpendicular at base back)')
+
+loop.rotateX(-90).save_as_scad('loop.scad')
