@@ -218,3 +218,4 @@ print('Top setback=',round(front_info['right'],1),'(distance from perpendicular 
 print('Top-back setback=',round(back_info['right'],1),'(distance from perpendicular at base back)')
 
 loop.rotateX(-90).save_as_scad('loop.scad')
+(foot - Tube(TUBE_ID,0,FEET_WIDTH)()).save_as_scad('foot.scad')
