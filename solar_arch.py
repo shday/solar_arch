@@ -6,6 +6,14 @@ from solid2.extensions import bosl2
 def extrude_from_to(obj, start, end):
     return bosl2.extrude_from_to(start,end)(obj)
 
+def sin(angle):
+    return math.sin(math.radians(angle))
+
+def cos(angle):
+    return math.cos(math.radians(angle))
+
+def tan(angle):
+    return math.tan(math.radians(angle))
 
 SMALL_TUBE_OD = 25.4
 SMALL_TUBE_ID = 24
@@ -39,17 +47,17 @@ CROSS_SUPPORT_OFFSET = 750
 FRONT_TOP_TUBE = FRONT_ARCH_WIDTH - 2*BEND_RADIUS
 BACK_TOP_TUBE = BACK_ARCH_WIDTH - 2*BEND_RADIUS
 
-FRONT_STANTION = RAIL_HEIGHT/math.cos(math.radians(FRONT_STANTION_ANGLE))
-BACK_STANTION = RAIL_HEIGHT/math.cos(math.radians(BACK_STANTION_ANGLE))
+FRONT_STANTION = RAIL_HEIGHT/cos(FRONT_STANTION_ANGLE)
+BACK_STANTION = RAIL_HEIGHT/cos(BACK_STANTION_ANGLE)
 
 
 FRONT_ARCH_TUBE = (ARCH_HEIGHT - RAIL_HEIGHT -
-                   (math.sin(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))-math.sin(math.radians(FRONT_STANTION_ANGLE)))  *BEND_RADIUS -
-                   math.cos(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))*BEND_RADIUS)/math.cos(math.radians(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE))
+                   (sin(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE)-sin(FRONT_STANTION_ANGLE))  *BEND_RADIUS -
+                   cos(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE)*BEND_RADIUS)/cos(FRONT_ARCH_ANGLE+FRONT_STANTION_ANGLE)
 
 BACK_ARCH_TUBE = (ARCH_HEIGHT - RAIL_HEIGHT -
-                   (math.sin(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))-math.sin(math.radians(BACK_STANTION_ANGLE)))  *BEND_RADIUS -
-                   math.cos(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))*BEND_RADIUS)/math.cos(math.radians(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE))
+                   (sin(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE)-sin(BACK_STANTION_ANGLE))  *BEND_RADIUS -
+                   cos(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE)*BEND_RADIUS)/cos(BACK_ARCH_ANGLE+BACK_STANTION_ANGLE)
 
 
 set_global_fn(72)
@@ -88,23 +96,23 @@ def connect(tube,bend,tube2,bend2,tube3):
     t = tube()
 
     rotateY = tube.rotateY
-    up = math.cos(math.radians(rotateY))*tube.length
-    right = math.sin(math.radians(rotateY))*tube.length
+    up = cos(rotateY)*tube.length
+    right = sin(rotateY)*tube.length
     b = bend().rotateY(rotateY).right(right).up(up)
 
-    right = right+ (math.cos(math.radians(rotateY)) - math.cos(math.radians(bend.angle+rotateY)) )*bend.bend_radius
-    up = up + (math.sin(math.radians(bend.angle+rotateY)) - math.sin(math.radians(rotateY)))*bend.bend_radius
+    right = right+ (cos(rotateY) - cos(bend.angle+rotateY) )*bend.bend_radius
+    up = up + (sin(bend.angle+rotateY) - sin(rotateY))*bend.bend_radius
     rotateY = rotateY + bend.angle
     t2 = tube2().rotateY(rotateY).right(right).up(up)
     
-    right = right + math.sin(math.radians(rotateY))*tube2.length
-    up = up + math.cos(math.radians(rotateY))*tube2.length
+    right = right + sin(rotateY)*tube2.length
+    up = up + cos(rotateY)*tube2.length
     b2 = bend2().rotateY(rotateY).right(right).up(up)
 
-    right = right + math.sin(math.radians(rotateY))*bend2.bend_radius
-    up = up + math.sin(math.radians(bend2.angle))*bend2.bend_radius \
-            - (1-math.cos(math.radians(rotateY)))*bend2.bend_radius
-    forward = (1 - math.cos(math.radians(bend2.angle)))*bend2.bend_radius
+    right = right + sin(rotateY)*bend2.bend_radius
+    up = up + sin(bend2.angle)*bend2.bend_radius \
+            - (1-cos(rotateY))*bend2.bend_radius
+    forward = (1 - cos(bend2.angle))*bend2.bend_radius
     t3 = tube3().rotateX(-bend2.rotateZ).right(right).up(up).forward(forward)
     #print(f'{up=} {right=} {rotateY=}')
     return (t + b + t2 +b2 + t3, {'right':right,'rotateY':rotateY,'up':up})
@@ -138,7 +146,7 @@ z_angle = math.degrees(math.atan((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2/side_suppo
 
 side_support = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, side_support_span,rotateY=90)
 side_support = side_support().rotateZ(z_angle).right(front_info['right'] 
-                            - SIDE_SUPPORT_OFFSET*math.tan(math.radians(front_info['rotateY']))).up(ARCH_HEIGHT-SIDE_SUPPORT_OFFSET)
+                            - SIDE_SUPPORT_OFFSET*tan(front_info['rotateY'])).up(ARCH_HEIGHT-SIDE_SUPPORT_OFFSET)
 
 rail_span = ARCH_DEPTH - RAIL_HEIGHT*math.tan(math.radians(
             (FRONT_STANTION_ANGLE - BACK_STANTION_ANGLE)))
@@ -146,7 +154,7 @@ z_angle = math.degrees(math.atan((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2/rail_span)
 
 rail = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, rail_span,rotateY=90)
 rail = rail().rotateZ(z_angle).right(
-        RAIL_HEIGHT*math.tan(math.radians(FRONT_STANTION_ANGLE))).up(RAIL_HEIGHT)
+        RAIL_HEIGHT*tan(FRONT_STANTION_ANGLE)).up(RAIL_HEIGHT)
 
 half_rail_span = ARCH_DEPTH - RAIL_HEIGHT/2*math.tan(math.radians(
             (FRONT_STANTION_ANGLE - BACK_STANTION_ANGLE)))
@@ -154,12 +162,12 @@ z_angle = math.degrees(math.atan((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2/half_rail_
 
 half_rail = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, half_rail_span,rotateY=90)
 half_rail = half_rail().rotateZ(z_angle).right(
-        RAIL_HEIGHT/2*math.tan(math.radians(FRONT_STANTION_ANGLE))).up(RAIL_HEIGHT/2)
+        RAIL_HEIGHT/2*tan(FRONT_STANTION_ANGLE)).up(RAIL_HEIGHT/2)
 
 #Cross support
 ring = circle(d=SMALL_TUBE_OD) - circle(d=SMALL_TUBE_ID)
 
-startX = ARCH_DEPTH + back_info['right'] - 0.8*CROSS_SUPPORT_OFFSET*math.tan(math.radians(back_info['rotateY']))
+startX = ARCH_DEPTH + back_info['right'] - 0.8*CROSS_SUPPORT_OFFSET*tan(back_info['rotateY'])
 startY = (FRONT_ARCH_WIDTH - BACK_ARCH_WIDTH)/2
 startZ = ARCH_HEIGHT- 0.8*CROSS_SUPPORT_OFFSET
 
@@ -184,14 +192,12 @@ davit = davit.right(ARCH_DEPTH+back_info['right']).up(ARCH_HEIGHT).forward(TOP_S
 
 
 #Feet
-RAD30 = math.radians(30)
-RAD60 = math.radians(60)
 foot = Tube(FEET_DIAMETER, 0, FEET_WIDTH, rotateY=0)()
 bolt_hole = Tube(BOLT_HOLE_DIAMETER,0,FEET_WIDTH)()
-foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).forward(
-    math.cos(RAD30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
-foot = foot - bolt_hole.right(math.cos(RAD60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).back(
-    math.cos(RAD30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
+foot = foot - bolt_hole.right(cos(60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).forward(
+    cos(30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
+foot = foot - bolt_hole.right(cos(60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).back(
+    cos(30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
 foot = foot - bolt_hole.left(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)
 back_foot = foot.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
 
