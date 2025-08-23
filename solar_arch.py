@@ -36,7 +36,7 @@ LOOP_WIDTH = 8
 LOOP_HOLE_DIAMETER = 20
 
 FEET_DIAMETER = 100
-FEET_WIDTH = 10
+FEET_WIDTH = 8
 BOLT_HOLE_DIAMETER = 8.5
 BOLE_HOLE_OFFSET = 15
 
@@ -136,10 +136,6 @@ top_support = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, top_support_span, rotateY=90)
 top_support = top_support().right(front_info['right']).up(ARCH_HEIGHT).forward(TOP_SUPPORT_OFFSET)
 
 
-#brace = Tube(SMALL_TUBE_OD, SMALL_TUBE_ID, (2*TOP_SUPPORT_OFFSET**2)**0.5, rotateY=0)
-#brace = brace().rotateX(-45).rotateY(back_info['rotateY']).right(back_info['right']+ARCH_DEPTH).up(ARCH_HEIGHT-TOP_SUPPORT_OFFSET).forward(TOP_SUPPORT_OFFSET)
-
-
 side_support_span = back_info['right']-front_info['right']+ARCH_DEPTH\
                 + SIDE_SUPPORT_OFFSET*math.tan(math.radians((front_info['rotateY']-back_info['rotateY'])))
 z_angle = math.degrees(math.atan((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2/side_support_span))
@@ -199,19 +195,23 @@ foot = foot - bolt_hole.right(cos(60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).forw
 foot = foot - bolt_hole.right(cos(60)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)).back(
     cos(30)*(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET))
 foot = foot - bolt_hole.left(FEET_DIAMETER/2 - BOLE_HOLE_OFFSET)
-back_foot = foot.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
+foot = foot - Tube(TUBE_ID,0,FEET_WIDTH)()
+feet = foot + foot.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
 
-#Flatten stantion edges from bottom of feet and make hole for wiring
-foot_minus = foot + Tube(TUBE_ID,0,FEET_WIDTH*2)()
-back_foot_minus = foot_minus.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2)
+#Extend then flatten stantion bottom edges to mate nicely with feet
+front_arch = front_arch + Tube(TUBE_OD, TUBE_ID, FEET_WIDTH,rotateY=FRONT_STANTION_ANGLE+180)()
+back_arch = back_arch + Tube(TUBE_OD, TUBE_ID, FEET_WIDTH,rotateY=BACK_STANTION_ANGLE+180)()
+flattener = Tube(FEET_DIAMETER,0,FEET_WIDTH*3)().down(FEET_WIDTH*2)
+front_arch = front_arch - flattener
+back_arch = back_arch - flattener
 
+#Final assembly
 arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_ARCH_WIDTH)/2) \
         + top_support + side_support +  rail + half_rail \
             + cross_support \
                 + davit \
-                + foot + back_foot 
+                + feet
 
-arch = arch - foot_minus.down(FEET_WIDTH) - back_foot_minus.down(FEET_WIDTH)
 
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
@@ -224,4 +224,4 @@ print('Top setback=',round(front_info['right'],1),'(distance from perpendicular 
 print('Top-back setback=',round(back_info['right'],1),'(distance from perpendicular at base back)')
 
 loop.rotateX(-90).save_as_scad('loop.scad')
-(foot - Tube(TUBE_ID,0,FEET_WIDTH)()).save_as_scad('foot.scad')
+foot.save_as_scad('foot.scad')
