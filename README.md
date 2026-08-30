@@ -1,7 +1,7 @@
 # solar_arch
 
-Parametric CAD model of a freestanding arched steel-tube frame for mounting
-solar panels, with a davit hook for lifting the assembled structure into place.
+Parametric CAD model of an arched steel-tube frame for mounting solar panels,
+with davits for lifting a tender/dinghy.
 
 The design is **code-first**: a single Python script (SolidPython2 + BOSL2)
 derives every member length from a small set of dimension constants and emits
@@ -26,7 +26,7 @@ All dimensions in millimetres, set as constants at the top of `solar_arch.py`.
 | Stantion lean | front 15°, back 5° |
 | Arch bend angle | front 15°, back 20° |
 | Feet | Ø100 mm × 8 mm, 3 × Ø8.5 mm bolt holes, Ø37 mm centre bore |
-| Davit | 300 mm tube, 3 mm end cap, loop with Ø20 mm hole |
+| Dinghy davit | 300 mm tube, 3 mm end cap, loop with Ø20 mm hole |
 
 The generator prints the derived geometry on each run, e.g.:
 
@@ -43,7 +43,7 @@ Top-back setback= 635.2 (distance from perpendicular at base back)
 |---|---|
 | `solar_arch.py` | **Source of truth** — parametric generator (SolidPython2 + BOSL2) |
 | `solar_arch.scad` | Generated full assembly (both arch frames mirrored) |
-| `loop.scad` | Generated davit loop sub-part (3D-printable) |
+| `loop.scad` | Generated dinghy davit loop sub-part (3D-printable) |
 | `foot.scad` | Generated foot sub-part (3D-printable) |
 | `solar_arch.stl` | Exported mesh (ASCII, ~20 MB) |
 | `solar_arch.png` | Render preview |
