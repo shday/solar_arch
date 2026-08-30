@@ -215,6 +215,37 @@ arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_A
 
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
+#Weight estimate (304 stainless steel; 316 is ~0.6% heavier)
+STEEL_DENSITY = 7930e-9 # kg/mm^3
+
+def annulus_area(outer_d, inner_d):
+    return math.pi/4*(outer_d**2 - inner_d**2)
+
+main_area = annulus_area(TUBE_OD, TUBE_ID)
+small_area = annulus_area(SMALL_TUBE_OD, SMALL_TUBE_ID)
+
+main_straight = 2*(FRONT_STANTION + FRONT_ARCH_TUBE + FRONT_TOP_TUBE/2 +
+                   BACK_STANTION + BACK_ARCH_TUBE + BACK_TOP_TUBE/2) + 2*DAVIT_LENGTH
+main_bends = 2*(math.radians(FRONT_ARCH_ANGLE+90)*BEND_RADIUS +
+                math.radians(BACK_ARCH_ANGLE+90)*BEND_RADIUS)
+
+cross_support_len = math.sqrt((endX-startX)**2 + (endY-startY)**2 + (endZ-startZ)**2)
+small_len = 2*(top_support_span + side_support_span + rail_span + half_rail_span + cross_support_len)
+
+cap_vol = math.pi/4*TUBE_OD**2 * CAP_WIDTH * 2
+loop_radius = TUBE_ID/2
+loop_left = loop_radius - TUBE_OD/2
+loop_overlap = loop_radius**2*math.acos(loop_left/loop_radius) - loop_left*math.sqrt(loop_radius**2-loop_left**2)
+loop_area = math.pi*loop_radius**2 + TUBE_ID**2 - loop_overlap - math.pi/4*LOOP_HOLE_DIAMETER**2
+loop_vol = loop_area * LOOP_WIDTH * 2
+foot_area = math.pi/4*(FEET_DIAMETER**2 - 3*BOLT_HOLE_DIAMETER**2 - TUBE_ID**2)
+foot_vol = foot_area * FEET_WIDTH * 4
+
+weight_main = STEEL_DENSITY*main_area*(main_straight+main_bends)
+weight_small = STEEL_DENSITY*small_area*small_len
+weight_solid = STEEL_DENSITY*(cap_vol + loop_vol + foot_vol)
+total_weight = weight_main + weight_small + weight_solid
+
 arch.save_as_scad("solar_arch.scad")
 
 assert math.isclose(front_info['up'],back_info['up'])
@@ -222,6 +253,8 @@ print('Height=',round(front_info['up'],1))
 print('Top depth=',round(top_support_span,1))
 print('Top setback=',round(front_info['right'],1),'(distance from perpendicular at base front)')
 print('Top-back setback=',round(back_info['right'],1),'(distance from perpendicular at base back)')
+print('Weight (304 SS)=',round(total_weight,1),'kg')
+print('   main tube=',round(weight_main,1),'kg; bracing=',round(weight_small,1),'kg; solid parts=',round(weight_solid,1),'kg')
 
 loop.rotateX(-90).save_as_scad('loop.scad')
 foot.save_as_scad('foot.scad')
