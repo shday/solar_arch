@@ -1,0 +1,3 @@
+# SolidPython2 (import name: solid2) — tested with Python 3.13.
+# BOSL2 is bundled inside solidpython2; no separate dependency is needed.
+solidpython2==2.1.2
