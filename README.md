@@ -35,8 +35,8 @@ Height= 2000.0
 Top depth= 720.4
 Top setback= 914.8 (distance from perpendicular at base front)
 Top-back setback= 635.2 (distance from perpendicular at base back)
-Weight (304 SS)= 28.4 kg
-   main tube= 22.8 kg; bracing= 3.6 kg; solid parts= 1.9 kg
+Weight (316L SS)= 28.5 kg
+   main tube= 22.9 kg; bracing= 3.7 kg; solid parts= 1.9 kg
 ```
 
 ## Files

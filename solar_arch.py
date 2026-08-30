@@ -215,8 +215,8 @@ arch = front_arch + back_arch.right(ARCH_DEPTH).forward((FRONT_ARCH_WIDTH-BACK_A
 
 arch = arch + arch.mirrorY().forward(FRONT_ARCH_WIDTH)
 
-#Weight estimate (304 stainless steel; 316 is ~0.6% heavier)
-STEEL_DENSITY = 7930e-9 # kg/mm^3
+#Weight estimate (316L stainless steel)
+STEEL_DENSITY = 7980e-9 # kg/mm^3
 
 def annulus_area(outer_d, inner_d):
     return math.pi/4*(outer_d**2 - inner_d**2)
@@ -253,7 +253,7 @@ print('Height=',round(front_info['up'],1))
 print('Top depth=',round(top_support_span,1))
 print('Top setback=',round(front_info['right'],1),'(distance from perpendicular at base front)')
 print('Top-back setback=',round(back_info['right'],1),'(distance from perpendicular at base back)')
-print('Weight (304 SS)=',round(total_weight,1),'kg')
+print('Weight (316L SS)=',round(total_weight,1),'kg')
 print('   main tube=',round(weight_main,1),'kg; bracing=',round(weight_small,1),'kg; solid parts=',round(weight_solid,1),'kg')
 
 loop.rotateX(-90).save_as_scad('loop.scad')
